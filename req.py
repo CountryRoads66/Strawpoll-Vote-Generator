@@ -7,40 +7,44 @@ with open(config_file_path, 'r') as file:
     config = json.load(file)
 
 
+response = requests.get(url = config.get('poll_url'), timeout=10)
+for line in response.text.split('\n'):
+    if(config.get('item_name') in line) and 'this' in line:
+        option_data = json.loads(line.split('Keys(')[1].split('))')[0])
+print(option_data)
+poll_id = option_data['id']
+for item in option_data['poll_options']:
+    if(config.get('item_name') in item['value']):
+        item_id = item['id']
+        item_poll_id = item['uuid']
+data = {
+    "pv": item_poll_id,
+    "v": {
+        "id": "",
+        "name": "",
+        "pollVotes": [
+            {
+                "id": item_id,
+                "value": 1
+            }
+        ],
+        "voteType": "add",
+        "token": "",
+        "isEmbed": False
+    },
+    "h": False,
+    "ht": False,
+    "token": None,
+    "st": None
+}
+
+
 def vote():
     for i in range(config.get('vote_count')):
         s = requests.Session()
         response1 = s.get(url = config.get('poll_url'), timeout=10)
-        for line in response1.text.split('\n'):
-            if(config.get('item_name') in line) and 'this' in line:
-                option_data = json.loads(line.split('Keys(')[1].split('))')[0])
-        poll_id = option_data['id']
-        for item in option_data['poll_options']:
-            if(config.get('item_name') in item['value']):
-                item_id = item['id']
-                item_poll_id = item['uuid']
         headers = {
-            'Cookie': 'session='+response1.cookies.get_dict()['session']
-        }
-        data = {
-            "pv": item_poll_id,
-            "v": {
-                "id": "",
-                "name": "",
-                "pollVotes": [
-                    {
-                        "id": item_id,
-                        "value": 1
-                    }
-                ],
-                "voteType": "add",
-                "token": "",
-                "isEmbed": False
-            },
-            "h": False,
-            "ht": False,
-            "token": None,
-            "st": None
+        'Cookie': 'session='+response1.cookies.get_dict()['session']
         }
         cookies = {'session': response1.cookies.get_dict()['session']}
         response = s.post(url = f'https://api.strawpoll.com/v3/polls/{poll_id}/vote', json=data, cookies=cookies, headers=headers, verify=False, timeout=10)
