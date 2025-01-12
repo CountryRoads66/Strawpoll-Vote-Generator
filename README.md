@@ -56,7 +56,7 @@ The `config.json` file allows you to customize the behavior of the voting script
 First, clone the repository to your local machine:
 
 ```
-git clone https://github.com/your-username/Strawpoll-Vote-Generator.git cd Strawpoll-Vote-Generator 
+git clone https://github.com/your-username/Strawpoll-Vote-Generator.git && cd Strawpoll-Vote-Generator 
 ```
 ---
 
