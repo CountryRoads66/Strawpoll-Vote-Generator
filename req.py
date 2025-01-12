@@ -11,7 +11,6 @@ response = requests.get(url = config.get('poll_url'), timeout=10)
 for line in response.text.split('\n'):
     if(config.get('item_name') in line) and 'this' in line:
         option_data = json.loads(line.split('Keys(')[1].split('))')[0])
-print(option_data)
 poll_id = option_data['id']
 for item in option_data['poll_options']:
     if(config.get('item_name') in item['value']):
